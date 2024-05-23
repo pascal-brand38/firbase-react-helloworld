@@ -6,6 +6,7 @@ This is a step-by-step application using
 * [React](https://react.dev/) for the web application library
 * [Vite](https://vitejs.dev/) to setup the application
 
+____________________________________________________________________
 
 React + Vite Initialization
 ---------------------------
@@ -43,12 +44,10 @@ npm run dev
 ```
 
 
+____________________________________________________________________
 
-
-[Firebase](https://firebase.google.com/)
+[Firebase](https://firebase.google.com/) Create and Deploy
 ----------------------------------------
-
-### Firebase create and deployment
 
 First, a firebase project must be created on https://firebase.google.com/
 
@@ -95,4 +94,99 @@ firebase deploy
 git add .
 git commit -s -m 'firebase'
 git push
+```
+
+____________________________________________________________________
+
+[Firebase](https://firebase.google.com/) Use in the application
+----------------------------------------
+
+In App.jsx, use the following:
+
+```js
+import { initializeApp } from "firebase/app"
+const [app, setApp] = useState(undefined)
+
+useEffect(() => {
+  const init = async() => {
+    const firebaseConfig = {    // is found in the firebase application parameters
+      apiKey: "AIzaSyAggx6E7Q6ttCUI2Lkexf6xz4VvtiPNUZc",
+      authDomain: "firbase-react-helloworld.firebaseapp.com",
+      projectId: "firbase-react-helloworld",
+      storageBucket: "firbase-react-helloworld.appspot.com",
+      messagingSenderId: "597188741887",
+      appId: "1:597188741887:web:fa6a8203246efeed77daca"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    setApp(app)
+  }
+
+  init()
+
+}, [])
+```
+
+
+____________________________________________________________________
+
+Firestore Database
+------------------
+
+### Database creation
+Go on https://firebase.google.com, then ```go to the console```, and then select the project (firbase-react-helloworld)
+
+Then click on ```Create / Firestore Database```, and then ```Create a database``` and ```Démarrer en mode test```
+
+Then ```Create a new collection```
+* called stats
+* with document id being count
+* with 1 field: count, a number initialized at 0
+
+### Database usage in the Application
+
+You can refer at [Google documentation](https://firebase.google.com/docs/firestore/query-data/get-data?hl=fr).
+
+
+#### Use the Database
+
+In App.jsx, use the following:
+
+```js
+import { getFirestore } from "firebase/firestore"
+import { doc, getDoc, setDoc } from "firebase/firestore"
+
+const [db, setDb] = useState(undefined)
+
+useEffect(() => {
+  const init = async() => {
+    const db = getFirestore(app);
+    setDb(db)
+
+    const docRef = doc(db, "stats", "count");
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+      setCount(docSnap.data().count)    // read the database
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }
+
+  init()
+}, [])
+
+const incCount = () => {
+  setCount((count) => {
+    const newCount = count + 1
+    const docRef = doc(db, "stats", "count");
+    // save in the database
+    setDoc(docRef, { count: newCount }, { merge: true });
+
+    return newCount
+  })
+}
 ```
