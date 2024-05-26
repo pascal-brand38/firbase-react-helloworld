@@ -164,8 +164,6 @@ useEffect(() => {
     const db = getFirestore(app);
     setDb(db)
 
-    const docRef = doc(db, "stats", "count");
-    const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       console.log("Document data:", docSnap.data());
@@ -179,14 +177,54 @@ useEffect(() => {
   init()
 }, [])
 
-const incCount = () => {
-  setCount((count) => {
-    const newCount = count + 1
-    const docRef = doc(db, "stats", "count");
-    // save in the database
-    setDoc(docRef, { count: newCount }, { merge: true });
+// Read a value from the database
+const docRef = doc(db, "stats", "count");
+const docSnap = await getDoc(docRef);
 
-    return newCount
+// Write a value to the database
+setDoc(docRef, { count: newCount }, { merge: true });
+```
+
+
+Authentication
+--------------
+
+Several [authentication methods](https://firebase.google.com/docs/auth/where-to-start?authuser=0&hl=fr) exist in Firebase, such as the [Authentication Email/Password](https://firebase.google.com/docs/auth/web/password-auth?authuser=0&hl=fr).
+
+In order to use email/password authentication, ```go to the console``` and
+your project, then ```Create Authentication```, then ```Email/Password```, and finally ```Activate```.
+
+To create a new user
+```js
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth();
+createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed up
+    const user = userCredential.user;
+    // ...
   })
-}
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
+```
+
+To connect
+```js
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth();
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
 ```
