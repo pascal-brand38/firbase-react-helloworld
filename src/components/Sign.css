@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  margin: 1rem;
 }
 
 .one-sign {
@@ -20,13 +21,6 @@
   display: block;
 }
 
-.input {
-  /* font-size: larger; */
-  /* padding: 5px;
-  margin: 2px; */
-
-}
-
 .btn {
   color: white;
   background-color: red;
@@ -36,24 +30,3 @@
   padding: 5px;
   margin: 10px auto;
 }
-
-.message {
-  /* display: flex;
-  justify-content: center; */
-}
-
-/* .error {
-  display: block;
-  background-color: red;
-  color: white;
-  height: 50px;
-  padding: 5px;
-}
-
-.success {
-  display: block;
-  background-color: lightblue;
-  color: black;
-  height: 50px;
-  padding: 5px;
-} */
