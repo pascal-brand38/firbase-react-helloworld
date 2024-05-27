@@ -228,3 +228,64 @@ signInWithEmailAndPassword(auth, email, password)
     const errorMessage = error.message;
   });
 ```
+
+
+
+Storage
+=======
+
+In the Firebase console, create a Storage, a directory
+```Public``` in the storage, and finally upload a file there.
+
+In the rules tab of the console, create the following rule to
+indicate that anything inside the public folder is read-only:
+```
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /public/{file} {
+      allow read;
+      allow write: if false;
+    }
+  }
+}
+```
+
+And finally configure the storage to be accessed whatever is the IP:
+```bash
+pacman -S mingw-w64-x86_64-python-gsutil
+python -m pip install requests
+
+cat <<< EOF >>> cors.json
+[
+  {
+    "origin": ["*"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]
+EOF
+
+gsutil cors set cors.json gs://firbase-react-helloworld.appspot.com
+```
+
+In your application, use the following to get the url access of a file,
+to be run once the app initialization is performed:
+```js
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+
+const storage = getStorage();
+const imgRef = ref(storage, 'public/firebase-cloud-storage.png');
+getDownloadURL(imgRef)
+  .then((url) => {
+    // Insert url into an <img> tag to "download"
+    console.log('PASCAL url ', url)
+    setUrl(url)
+  })
+  .catch((error) => {
+    // check https://firebase.google.com/docs/storage/web/download-files?hl=fr
+    // and https://firebase.google.com/docs/storage/web/handle-errors
+    console.log(`STORAGE ERROR ${error}`)
+  })
+```

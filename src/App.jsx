@@ -8,6 +8,7 @@ import { initializeApp } from "firebase/app";
 
 import { Firestore } from './components/Firestore'
 import { Sign } from './components/Sign'
+import { Storage } from './components/Storage'
 
 function App() {
   const [app, setApp] = useState(undefined)
@@ -35,8 +36,8 @@ function App() {
   return (
     <>
       <Firestore app={app} />
-
       <Sign />
+      <Storage app={app} />
     </>
   )
 }
